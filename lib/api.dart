@@ -2,6 +2,7 @@
 
 import 'package:http/http.dart' as http;
 import 'package:market/globals.dart';
+import 'package:market/models/city.dart';
 import 'package:market/models/order.dart';
 import 'package:market/models/products.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,12 +10,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'models/user.dart';
 
-
-
-const addressIp = "http://192.168.43.196:8000";
-// const addressIp = "http://192.168.1.3:8000";
+//const addressIp = "http://192.168.43.196:8000";
+//const addressIp = "http://192.168.1.3:8000";
+//const addressIp = "http://192.168.1.71:8000";
+const addressIp = "http://192.168.1.42:8000";
 const ipAddressApi = "$addressIp/api";
-
 
 class API {
   static Map<String, String> headers = <String, String>{
@@ -107,6 +107,7 @@ class API {
       return false;
     }
   }
+
   static Future<bool> login(String password, String email) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Uri uriUser = Uri.parse('$ipAddressApi/account/login/');
@@ -116,7 +117,6 @@ class API {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
-       
         "password": password,
         "phoneNumber": email,
       }),
@@ -140,9 +140,6 @@ class API {
     }
   }
 
-
-
-
   static Future<List<Product>> getProducts() async {
     Uri uri = Uri.parse('$ipAddressApi/products/products/');
     final response = await http.get(uri);
@@ -156,9 +153,36 @@ class API {
       return [];
     }
   }
+  static Future<List<Product>> getProductsByCity(int id) async {
+    Uri uri = Uri.parse('$ipAddressApi/products/cities/${id}/products');
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(utf8.decode(response.bodyBytes));
+      var jsontolist = data['data'] as List;
+      return jsontolist.map((tagJson) => Product.fromJson(tagJson)).toList();
+    } else {
+      print('produits introuvable');
+      return [];
+    }
+  }
+  static Future<List<City>> getCities() async {
+    Uri uri = Uri.parse('$ipAddressApi/products/cities/');
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(utf8.decode(response.bodyBytes));
+      var jsontolist = data['data'] as List;
+      return jsontolist.map((tagJson) => City.fromJson(tagJson)).toList();
+    } else {
+      print('produits introuvable');
+      return [];
+    }
+  }
 
 
-   static Future<Order?> passOrder(List<OrderItem> orderItems,
+
+  static Future<Order?> passOrder(List<OrderItem> orderItems,
       List<OrderItem> extras, int? total, int? deliveryFee, bool meal) async {
     Uri uri = Uri.parse('$ipAddressApi/orders/');
     final response = await http.post(
@@ -180,16 +204,4 @@ class API {
     }
     return null;
   }
-
-  
-  
-
-
-
-
-
-
-
-
-
 }

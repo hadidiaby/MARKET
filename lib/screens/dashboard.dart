@@ -1,16 +1,50 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:market/models/city.dart';
+import 'package:market/models/products.dart';
 import 'package:market/models/vegetable_data.dart';
 import 'package:market/screens/vegetable_detail.dart';
 import 'package:market/screens/vegetables.dart';
 import 'package:market/utils/routes.dart';
 import '../widgets/vegetable_card.dart';
+import '../api.dart';
+import '../globals.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
 
   @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  List<City> _cities = [];
+  List<Product> _citiesprod = [];
+  int selected_city = -1;
+  @override
+  void initState() {
+    API.getCities().then((value) {
+      setState(() {
+        _cities = value;
+        if (value.length > 0) {
+          selected_city = value.first.id!;
+        }
+      });
+    });
+    super.initState();
+  }
+
+  void loadproducts() {
+    API.getProductsByCity(selected_city).then((value) {
+      setState(() {
+        _citiesprod = value;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    String first = globalUser!.user!.lastName ?? "";
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -32,7 +66,7 @@ class DashboardScreen extends StatelessWidget {
                     flex: 3,
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 8),
-                      child: const Column(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -47,7 +81,7 @@ class DashboardScreen extends StatelessWidget {
                             height: 4,
                           ),
                           Text(
-                            "Nyaam market",
+                            first,
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 16,
@@ -74,7 +108,7 @@ class DashboardScreen extends StatelessWidget {
                             size: 16,
                           ),
                           Text(
-                            "My Flat",
+                            "Deco",
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 12,
@@ -127,22 +161,97 @@ class DashboardScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                _seeAllView(context, "Categories"),
+                _seeAllView(context, "Top Ventes"),
                 const SizedBox(
                   height: 24,
                 ),
-                Row(
-                  children: [
-                    _categoriesView("assets/images/ac.png", "Abidjan"),
-                    _categoriesView("assets/images/ac.png", "Abengourou"),
-                    _categoriesView("assets/images/ac.png", "Bouake"),
-                    _categoriesView("assets/images/ac.png", "Man"),
-                  ],
+                Container(
+                  margin: EdgeInsets.only(bottom: 10),
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(
+                              color: Colors.grey.withOpacity(0.3), width: 3))),
+                  height: 30,
+                  child: Builder(
+                    builder: (BuildContext context) {
+                      return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: _cities.length,
+                          itemBuilder: (context, index) => GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selected_city = _cities[index].id!;
+                                    loadproducts();
+                                  });
+                                },
+                                child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 15),
+                                    decoration: BoxDecoration(
+                                        border: (selected_city ==
+                                                _cities[index].id!)
+                                            ? Border(
+                                                bottom: BorderSide(
+                                                    width: 3,
+                                                    color: Colors.green))
+                                            : Border(bottom: BorderSide.none)),
+                                    child: Text(_cities[index].name!)),
+                              ));
+                    },
+                  ),
                 ),
+
+                Container(
+                  height: MediaQuery.sizeOf(context).height * 0.4,
+                  width: MediaQuery.sizeOf(context).width,
+                  padding: const EdgeInsets.symmetric(vertical: 1,horizontal: 5),
+                  child: GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 4,
+                      mainAxisSpacing: 4,
+                      mainAxisExtent: 225,
+                    ),
+                    itemBuilder: (context, index) {
+                      return VegetableCardWidget(
+                        imagePath: '$addressIp${_citiesprod[index].image}',
+                        name: _citiesprod[index].name ?? '',
+                        price: '${_citiesprod[index].price ?? 0} FCFA',
+                        onTapCallback: () {
+                          // OrderItem oItem = OrderItem(
+                          //     product: _products[index],
+                          //     price: _products[index].price!,
+                          //     quantity: 1);
+
+                          // int indexOrder = gblCart.indexWhere(
+                          //     (element) => _products[index].id == element.product!.id!);
+
+                          // if (indexOrder != -1) {
+                          //   oItem.quantity = gblCart[indexOrder].quantity! + 1;
+                          //   gblCart.replaceRange(indexOrder, indexOrder + 1, [oItem]);
+                          // } else {
+                          //   gblCart.add(oItem);
+                          // }
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => VegetableDetailScreen(
+                                      product: _citiesprod[index],
+                                    )),
+                          );
+                        },
+                      );
+                    },
+                    itemCount: _citiesprod.length,
+                  ),
+                ),
+
                 const SizedBox(
                   height: 32,
                 ),
-                _seeAllView(context, "Top Ventes"),
+                // _seeAllView(context, "Top Ventes"),
                 const SizedBox(
                   height: 24,
                 ),
@@ -190,8 +299,7 @@ class DashboardScreen extends StatelessWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => VegetablesScreen()),
+              MaterialPageRoute(builder: (context) => VegetablesScreen()),
             );
             // Navigator.pushNamed(context, MyRoutes.vegetablesRoute);
           },

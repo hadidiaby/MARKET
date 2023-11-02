@@ -20,6 +20,7 @@ class VegetableDetailScreen extends StatefulWidget {
 
 class _VegetableDetailScreenState extends State<VegetableDetailScreen> {
   int itemCount = 0;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +29,7 @@ class _VegetableDetailScreenState extends State<VegetableDetailScreen> {
     if (indexOrder != -1) {
       itemCount = gblCart[indexOrder].quantity!;
     }
+    int a = 5;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(

@@ -7,9 +7,13 @@ import 'package:market/utils/routes.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
+    var price_total=0;
+    for (var order_item in gblCart) {
+      price_total += (order_item.price)! * (order_item.quantity)!;
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -53,10 +57,10 @@ class CartScreen extends StatelessWidget {
                 child: ElevatedButton(
                     onPressed: () {
                       Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => LivraisonScreen()),
-            );
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LivraisonScreen()),
+                      );
                       // Navigator.pushNamed(context, MyRoutes.livraisonRoute);
                     },
                     style: TextButton.styleFrom(
@@ -66,7 +70,10 @@ class CartScreen extends StatelessWidget {
                       shape: StadiumBorder(),
                       backgroundColor: Color(0xff23AA49),
                     ),
-                    child: Text("Continuer")),
+                    child: price_total !=0
+                    ?
+                    Text("Commander pour : $price_total F CFA")
+                    :Text("Commander")),
               )
             ]),
           )

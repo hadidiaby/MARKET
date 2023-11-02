@@ -61,6 +61,8 @@ class OrderItem {
         product: json["product"],
     );
 
+  get cityName => null;
+
     Map<String, dynamic> toJson() => {
         "id": id,
         "price": price,

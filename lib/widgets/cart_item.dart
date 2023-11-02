@@ -16,8 +16,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
   int itemCount = 0;
   @override
   Widget build(BuildContext context) {
-    int indexOrder = gblCart
-        .indexWhere((element) => widget.item.product!.id == element.product!.id!);
+    int indexOrder = gblCart.indexWhere(
+        (element) => widget.item.product!.id == element.product!.id!);
     if (indexOrder != -1) {
       itemCount = gblCart[indexOrder].quantity!;
     }
@@ -54,6 +54,11 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                         color: Color(0xffFF324B),
                         fontSize: 16,
                         fontWeight: FontWeight.bold)),
+                Text(widget.item.product!.cityName!,
+                    style: const TextStyle(
+                        color: Color(0xffFF324B),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold)),
               ],
             ),
           ),
@@ -62,6 +67,16 @@ class _CartItemWidgetState extends State<CartItemWidget> {
               children: [
                 InkWell(
                   onTap: (() {
+                    int indexOrder = gblCart.indexWhere((element) =>
+                        widget.item.product!.id == element.product!.id!);
+                    OrderItem oItem = gblCart[indexOrder];
+
+                   
+
+                    if (indexOrder != -1) {
+                      oItem.quantity = gblCart[indexOrder].quantity! + 1;
+                      gblCart.replaceRange(indexOrder, indexOrder + 1, [oItem]);
+                    } 
                     setState(() {
                       itemCount++;
                     });
@@ -87,9 +102,27 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                 ),
                 InkWell(
                   onTap: () {
-                    setState(() {
-                      if (itemCount > 0) itemCount--;
-                    });
+                    int indexOrder = gblCart.indexWhere((element) =>
+                        widget.item.product!.id == element.product!.id!);
+                    OrderItem oItem = gblCart[indexOrder];
+
+                                
+
+                                if (indexOrder != -1) {
+                                  if (itemCount == 0) {
+                                    gblCart.removeAt(indexOrder);
+                                  } else {
+                                    oItem.quantity =
+                                        gblCart[indexOrder].quantity! - 1;
+
+                                    gblCart.replaceRange(
+                                        indexOrder, indexOrder + 1, [oItem]);
+                                  }
+                                }
+
+                                setState(() {
+                                  if (itemCount > 0) itemCount--;
+                                });
                   },
                   child: Image.asset(
                     "assets/images/remove_icon.png",
