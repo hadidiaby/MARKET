@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:market/api.dart';
-import 'package:market/globals.dart';
-import 'package:market/models/order.dart';
+
 import 'package:market/models/products.dart';
 import 'package:market/screens/vegetable_detail.dart';
 // import '../models/vegetable_data.dart';
@@ -63,20 +62,7 @@ class _VegetablesScreenState extends State<VegetablesScreen> {
               name: _products[index].name ?? '',
               price: '${_products[index].price ?? 0} FCFA',
               onTapCallback: () {
-                // OrderItem oItem = OrderItem(
-                //     product: _products[index],
-                //     price: _products[index].price!,
-                //     quantity: 1);
-
-                // int indexOrder = gblCart.indexWhere(
-                //     (element) => _products[index].id == element.product!.id!);
-
-                // if (indexOrder != -1) {
-                //   oItem.quantity = gblCart[indexOrder].quantity! + 1;
-                //   gblCart.replaceRange(indexOrder, indexOrder + 1, [oItem]);
-                // } else {
-                //   gblCart.add(oItem);
-                // }
+               
 
                 Navigator.push(
                   context,

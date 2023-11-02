@@ -1,24 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:market/globals.dart';
 import 'package:market/screens/livraison.dart';
-import '../models/cart_data.dart';
+import '../models/order.dart';
 import '../widgets/cart_item.dart';
-import 'package:market/utils/routes.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  List<OrderItem> _dupCart = gblCart;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    var price_total=0;
-    for (var order_item in gblCart) {
-      price_total += (order_item.price)! * (order_item.quantity)!;
+    var priceTotal = 0;
+    for (var order_item in _dupCart) {
+      priceTotal += (order_item.price)! * (order_item.quantity)!;
     }
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
+        title: const Text(
           "Cart",
           style: TextStyle(
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
@@ -39,12 +51,31 @@ class CartScreen extends StatelessWidget {
             margin: const EdgeInsets.symmetric(vertical: 16),
             child: ListView.separated(
               separatorBuilder: (context, index) {
-                return Divider();
+                return const Divider();
               },
-              itemCount: gblCart.length,
+              itemCount: _dupCart.length,
               itemBuilder: (context, index) {
                 return CartItemWidget(
-                  item: gblCart[index],
+                  item: _dupCart[index],
+                  add: () {
+                    gblCart[index].quantity = gblCart[index].quantity! + 1;
+
+                  
+                    setState(() {
+                      _dupCart = gblCart;
+                    });
+                  },
+                  remove: () {
+                    if (gblCart[index].quantity! - 1 == 0) {
+                      gblCart.removeAt(index);
+                    } else {
+                      gblCart[index].quantity = gblCart[index].quantity! - 1;
+                    }
+              
+                    setState(() {
+                      _dupCart = gblCart;
+                    });
+                  },
                 );
               },
             ),
@@ -59,21 +90,20 @@ class CartScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => LivraisonScreen()),
+                            builder: (context) => const LivraisonScreen()),
                       );
                       // Navigator.pushNamed(context, MyRoutes.livraisonRoute);
                     },
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       textStyle:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                      shape: StadiumBorder(),
-                      backgroundColor: Color(0xff23AA49),
+                          const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                      shape: const StadiumBorder(),
+                      backgroundColor: const Color(0xff23AA49),
                     ),
-                    child: price_total !=0
-                    ?
-                    Text("Commander pour : $price_total F CFA")
-                    :Text("Commander")),
+                    child: priceTotal != 0
+                        ? Text("Commander pour : $priceTotal F CFA")
+                        : const Text("Commander")),
               )
             ]),
           )

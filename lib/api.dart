@@ -10,10 +10,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'models/user.dart';
 
-//const addressIp = "http://192.168.43.196:8000";
+const addressIp = "http://192.168.43.196:8000";
 //const addressIp = "http://192.168.1.3:8000";
 //const addressIp = "http://192.168.1.71:8000";
-const addressIp = "http://192.168.1.42:8000";
+// const addressIp = "http://192.168.1.42:8000";
 const ipAddressApi = "$addressIp/api";
 
 class API {
