@@ -150,24 +150,24 @@ class DashboardScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: VegetableCardWidget(
-                        imagePath: "assets/images/ginger.png",
-                        name: "Gingembre",
-                        price: "1kg, 780 fcfa",
-                        onTapCallback: () {
-                          Navigator.pushNamed(
-                              context, MyRoutes.vegetableDetailRoute);
-                        },
-                      ),
-                    ),
-                    Expanded(
-                      child: VegetableCardWidget(
-                          imagePath: "assets/images/lamb_meat.png",
-                          name: "Bell Pepper Red",
-                          price: "1kg, 780fcfa",
-                          onTapCallback: () {}),
-                    ),
+                    // Expanded(
+                    //   child: VegetableCardWidget(
+                    //     imagePath: "assets/images/ginger.png",
+                    //     name: "Gingembre",
+                    //     price: "1kg, 780 fcfa",
+                    //     onTapCallback: () {
+                    //       Navigator.pushNamed(
+                    //           context, MyRoutes.vegetableDetailRoute);
+                    //     },
+                    //   ),
+                    // ),
+                    // Expanded(
+                    //   child: VegetableCardWidget(
+                    //       imagePath: "assets/images/lamb_meat.png",
+                    //       name: "Bell Pepper Red",
+                    //       price: "1kg, 780fcfa",
+                    //       onTapCallback: () {}),
+                    // ),
                   ],
                 )
               ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:market/globals.dart';
 import 'package:market/screens/livraison.dart';
 import '../models/cart_data.dart';
 import '../widgets/cart_item.dart';
@@ -36,10 +37,10 @@ class CartScreen extends StatelessWidget {
               separatorBuilder: (context, index) {
                 return Divider();
               },
-              itemCount: CartItemModel.cartItemList.length,
+              itemCount: gblCart.length,
               itemBuilder: (context, index) {
                 return CartItemWidget(
-                  item: CartItemModel.cartItemList[index],
+                  item: gblCart[index],
                 );
               },
             ),

@@ -11,9 +11,9 @@ import 'models/user.dart';
 
 
 
-const address = "http://192.168.43.196:8000";
-// const address = "http://192.168.1.3:8000";
-const ipAddressApi = "$address/api";
+const addressIp = "http://192.168.43.196:8000";
+// const addressIp = "http://192.168.1.3:8000";
+const ipAddressApi = "$addressIp/api";
 
 
 class API {
@@ -118,7 +118,7 @@ class API {
       body: jsonEncode(<String, dynamic>{
        
         "password": password,
-        "email": email,
+        "phoneNumber": email,
       }),
     );
     if ([200, 201].contains(response.statusCode)) {
@@ -169,12 +169,8 @@ class API {
       body: jsonEncode(<String?, dynamic>{
         // "status": 0,
         "total": total,
-        "deliveringFee": deliveryFee,
-        "mark": "",
-        "comment": "",
         "ordered_by": globalUser!.id,
         "order_items": orderItems.map((tagJson) => tagJson.toJson()).toList(),
-        "extras": extras.map((tagJson) => tagJson.toJson()).toList()
       }),
     );
     if (response.statusCode == 201) {

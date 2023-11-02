@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:market/models/products.dart';
+
 Order orderFromJson(String str) => Order.fromJson(json.decode(str));
 
 String orderToJson(Order data) => json.encode(data.toJson());
@@ -41,7 +43,7 @@ class OrderItem {
     int? price;
     int? quantity;
     int? order;
-    int? product;
+    Product? product;
 
     OrderItem({
         this.id,

@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           const PageHeading(title: 'Log-in',),
                           CustomInputField(
-                            labelText: 'Email',
+                            labelText: 'téléphone:',
                             hintText: 'Your email id',
                             validator: (textValue) {
                               if(textValue == null || textValue.isEmpty) {
@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           const SizedBox(height: 16,),
                           CustomInputField(
-                            labelText: 'Password',
+                            labelText: 'Mot de passe:',
                             hintText: 'Your password',
                             obscureText: true,
                             suffixIcon: true,

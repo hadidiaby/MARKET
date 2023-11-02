@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:market/api.dart';
+import 'package:market/globals.dart';
+import 'package:market/models/order.dart';
 import 'package:market/screens/cart.dart';
 import 'package:market/utils/routes.dart';
 
+import '../models/products.dart';
+
 class VegetableDetailScreen extends StatefulWidget {
-  const VegetableDetailScreen({Key? key}) : super(key: key);
+  const VegetableDetailScreen({
+    Key? key,
+    required this.product,
+  }) : super(key: key);
+  final Product product;
 
   @override
   State<VegetableDetailScreen> createState() => _VegetableDetailScreenState();
@@ -14,6 +23,11 @@ class _VegetableDetailScreenState extends State<VegetableDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    int indexOrder = gblCart
+        .indexWhere((element) => widget.product.id == element.product!.id!);
+    if (indexOrder != -1) {
+      itemCount = gblCart[indexOrder].quantity!;
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -58,8 +72,8 @@ class _VegetableDetailScreenState extends State<VegetableDetailScreen> {
                   alignment: Alignment.center,
                   widthFactor: 0.6,
                   child: Container(
-                    child: Image.asset(
-                      "assets/images/ginger.png",
+                    child: Image.network(
+                      '$addressIp${widget.product.image}',
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -84,7 +98,7 @@ class _VegetableDetailScreenState extends State<VegetableDetailScreen> {
                       Expanded(
                         flex: 2,
                         child: Text(
-                          "gingimbre",
+                          widget.product.name ?? '',
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 24,
@@ -96,6 +110,22 @@ class _VegetableDetailScreenState extends State<VegetableDetailScreen> {
                           children: [
                             InkWell(
                               onTap: (() {
+                                OrderItem oItem = OrderItem(
+                                    product: widget.product,
+                                    price: widget.product.price!,
+                                    quantity: 1);
+
+                                int indexOrder = gblCart.indexWhere((element) =>
+                                    widget.product.id == element.product!.id!);
+
+                                if (indexOrder != -1) {
+                                  oItem.quantity =
+                                      gblCart[indexOrder].quantity! + 1;
+                                  gblCart.replaceRange(
+                                      indexOrder, indexOrder + 1, [oItem]);
+                                } else {
+                                  gblCart.add(oItem);
+                                }
                                 setState(() {
                                   itemCount++;
                                 });
@@ -121,6 +151,26 @@ class _VegetableDetailScreenState extends State<VegetableDetailScreen> {
                             ),
                             InkWell(
                               onTap: () {
+                                OrderItem oItem = OrderItem(
+                                    product: widget.product,
+                                    price: widget.product.price!,
+                                    quantity: 1);
+
+                                int indexOrder = gblCart.indexWhere((element) =>
+                                    widget.product.id == element.product!.id!);
+
+                                if (indexOrder != -1) {
+                                  if (itemCount == 0) {
+                                    gblCart.removeAt(indexOrder);
+                                  } else {
+                                    oItem.quantity =
+                                        gblCart[indexOrder].quantity! - 1;
+
+                                    gblCart.replaceRange(
+                                        indexOrder, indexOrder + 1, [oItem]);
+                                  }
+                                }
+
                                 setState(() {
                                   if (itemCount > 0) itemCount--;
                                 });
@@ -139,7 +189,7 @@ class _VegetableDetailScreenState extends State<VegetableDetailScreen> {
                   SizedBox(
                     height: 16,
                   ),
-                  Text("1kg, 780fcfa",
+                  Text("1kg, ${widget.product.price}fcfa",
                       style: TextStyle(
                           color: Color(0xffFF324B),
                           fontSize: 20,
@@ -148,7 +198,7 @@ class _VegetableDetailScreenState extends State<VegetableDetailScreen> {
                     height: 12,
                   ),
                   Text(
-                    "« Le gingembre est une plante à fleurs dont le rhizome, racine de gingembre ou gingembre, est largement utilisé comme épice et médecine traditionnelle. »",
+                    widget.product.description ?? '',
                     style: TextStyle(
                         color: Color(0xff979899),
                         fontSize: 16,
@@ -190,10 +240,10 @@ class _VegetableDetailScreenState extends State<VegetableDetailScreen> {
                     child: ElevatedButton(
                         onPressed: () {
                           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CartScreen()),
-            );
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CartScreen()),
+                          );
                           // Navigator.pushNamed(context, MyRoutes.cartRoute);
                         },
                         style: TextButton.styleFrom(
