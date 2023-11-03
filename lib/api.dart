@@ -5,13 +5,14 @@ import 'package:market/globals.dart';
 import 'package:market/models/city.dart';
 import 'package:market/models/order.dart';
 import 'package:market/models/products.dart';
+import 'package:market/models/storeplace.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'models/user.dart';
 
-const addressIp = "http://192.168.43.196:8000";
-//const addressIp = "http://192.168.1.3:8000";
+// const addressIp = "http://192.168.43.196:8000";
+const addressIp = "http://192.168.1.44:8000";
 //const addressIp = "http://192.168.1.71:8000";
 // const addressIp = "http://192.168.1.42:8000";
 const ipAddressApi = "$addressIp/api";
@@ -179,12 +180,40 @@ class API {
       return [];
     }
   }
+  
+  
+  static Future<List<StorePlace>> getStore() async {
+    Uri uri = Uri.parse('$ipAddressApi/orders/store-places/');
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(utf8.decode(response.bodyBytes));
+      var jsontolist = data['data'] as List;
+      return jsontolist.map((tagJson) => StorePlace.fromJson(tagJson)).toList();
+    } else {
+      print('produits introuvable');
+      return [];
+    }
+  }
+  static Future<List<Order>> getOrders() async {
+    Uri uri = Uri.parse('$ipAddressApi/account/users/${globalUser!.id}/orders/');
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(utf8.decode(response.bodyBytes));
+      var jsontolist = data['data'] as List;
+      return jsontolist.map((tagJson) => Order.fromJson(tagJson)).toList();
+    } else {
+      print('produits introuvable');
+      return [];
+    }
+  }
 
 
 
-  static Future<Order?> passOrder(List<OrderItem> orderItems,
-      List<OrderItem> extras, int? total, int? deliveryFee, bool meal) async {
-    Uri uri = Uri.parse('$ipAddressApi/orders/');
+  static Future<Order?> passOrder(List<OrderItem> orderItems,int shippingplace
+       ) async {
+    Uri uri = Uri.parse('$ipAddressApi/orders/orders/');
     final response = await http.post(
       uri,
       headers: <String, String>{
@@ -192,7 +221,8 @@ class API {
       },
       body: jsonEncode(<String?, dynamic>{
         // "status": 0,
-        "total": total,
+        // "total": total,
+        "shipping_place": shippingplace,
         "ordered_by": globalUser!.id,
         "order_items": orderItems.map((tagJson) => tagJson.toJson()).toList(),
       }),

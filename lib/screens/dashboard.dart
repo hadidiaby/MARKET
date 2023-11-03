@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:market/models/city.dart';
 import 'package:market/models/products.dart';
+import 'package:market/screens/history.dart';
 import 'package:market/screens/vegetable_detail.dart';
 import 'package:market/screens/vegetables.dart';
 import '../widgets/vegetable_card.dart';
@@ -26,14 +27,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _cities = value;
         if (value.length > 0) {
           selected_city = value.first.id!;
+          loadproducts(value.first.id);
         }
       });
     });
     super.initState();
   }
 
-  void loadproducts() {
-    API.getProductsByCity(selected_city).then((value) {
+  void loadproducts([int? selected]) {
+    API.getProductsByCity(selected ?? selected_city).then((value) {
       setState(() {
         _citiesprod = value;
       });
@@ -68,19 +70,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             "Bienvenue",
                             style: TextStyle(
                                 color: Color(0xff979899),
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 4,
                           ),
                           Text(
                             first,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600),
@@ -155,6 +157,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
               scale: 4.0,
             ),
           ),
+
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const HistoryScreen()),
+            );
+            },
+            child: Text("voir historique"),
+          ),
+
+          
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -164,7 +178,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   height: 24,
                 ),
                 Container(
-                  margin: EdgeInsets.only(bottom: 10),
+                  margin: const EdgeInsets.only(bottom: 10),
                   decoration: BoxDecoration(
                       border: Border(
                           bottom: BorderSide(
@@ -183,16 +197,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   });
                                 },
                                 child: Container(
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         vertical: 5, horizontal: 15),
                                     decoration: BoxDecoration(
                                         border: (selected_city ==
                                                 _cities[index].id!)
-                                            ? Border(
+                                            ? const Border(
                                                 bottom: BorderSide(
                                                     width: 3,
                                                     color: Colors.green))
-                                            : Border(bottom: BorderSide.none)),
+                                            : const Border(bottom: BorderSide.none)),
                                     child: Text(_cities[index].name!)),
                               ));
                     },
@@ -202,7 +216,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Container(
                   height: MediaQuery.sizeOf(context).height * 0.4,
                   width: MediaQuery.sizeOf(context).width,
-                  padding: const EdgeInsets.symmetric(vertical: 1,horizontal: 5),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 1, horizontal: 5),
                   child: GridView.builder(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -253,7 +268,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SizedBox(
                   height: 24,
                 ),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -297,7 +312,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => VegetablesScreen()),
+              MaterialPageRoute(builder: (context) => const VegetablesScreen()),
             );
             // Navigator.pushNamed(context, MyRoutes.vegetablesRoute);
           },
